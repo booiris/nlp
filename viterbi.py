@@ -30,7 +30,7 @@ for i in range(1, len(string)):
             states.append(j)
 
     for j in states:
-
+        max_state = None
         max_prob = 0
         for k in dic:
             now_prob = dp[i - 1, dic[k]] * (transmat[dic[k], dic[j]] / speech_list[k]) * (
@@ -44,7 +44,7 @@ for i in range(1, len(string)):
         for state in path[max_state]:
             newpath.append(state)
         newpath.append(j)
-        path[j]=newpath
+        path[j] = newpath
 
 
 prob = 0
