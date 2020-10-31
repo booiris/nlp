@@ -3,20 +3,7 @@ import pickle
 from collections import defaultdict
 
 def dataset():
-    dic = {
-        "m": 0,
-        "a": 1,
-        "vt": 2,
-        "d": 3,
-        "ad": 4,
-        "qt": 5,
-        "n": 6,
-        "f": 7,
-        "vq": 8,
-        "vn": 9,
-        "vi": 10,
-        "dc": 11
-    }
+    dic = {'m': 0, 'u': 1, 'd': 2, 'an': 3, 'vn': 4, 'n': 5, 'y': 6, 'Ng': 7, 'w': 8, 'v': 9, 'j': 10, 'nr': 11, 'b': 12, 'ad': 13, 'q': 14, 't': 15, 'f': 16, 'r': 17, 'a': 18}
     transmat = np.zeros((len(dic), len(dic)))
     word_list = defaultdict(dict)
     speech_list = defaultdict(int)

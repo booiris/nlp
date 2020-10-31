@@ -9,8 +9,11 @@ transmat = varname["transmat"]
 word_list = varname["word_list"]
 speech_list = varname["speech_list"]
 
-ini = "多/年/来/最/重要/承诺"
+print(transmat[dic["u"]][dic["n"]])
+print(transmat[dic["u"]][dic["vn"]])
+ini = "多/年/来/最/重要/的/承诺"
 string = ini.split("/")
+
 for i in string:
     print(i)
     print(word_list[i])
