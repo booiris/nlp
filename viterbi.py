@@ -2,6 +2,7 @@ import numpy as np
 import pickle
 from collections import defaultdict
 
+
 f = open("varname.txt", "rb")
 varname = pickle.load(f)
 dic = varname["dic"]
