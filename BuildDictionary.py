@@ -11,6 +11,7 @@ speech_list = varname["speech_list"]
 
 punc = string.punctuation
 
+temp = 1
 cnt1 = 0
 cnt2 = 0
 for word in word_list:
