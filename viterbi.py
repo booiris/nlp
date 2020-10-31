@@ -12,11 +12,15 @@ speech_list = varname["speech_list"]
 ini = "多/年/来/最/重要/承诺"
 string = ini.split("/")
 for i in string:
+    print(i)
     print(word_list[i])
 print("")
 
+for i in dic:
+    print("\"" +i+"\"" + ": " + str(speech_list[i]))
+
 dp = np.zeros((len(string), len(dic)))
-for key in word_list[string[0]]:
+for key in dic:
     dp[0, dic[key]] = 1
 
 path = defaultdict(list)
@@ -55,3 +59,4 @@ for state in dic:
         res = state
 
 print(path[res])
+print(prob)
