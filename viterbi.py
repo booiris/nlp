@@ -40,8 +40,7 @@ for i in range(1, len(string)):
         max_state = None
         max_prob = 0
         for k in dic:
-            now_prob = dp[i - 1, dic[k]] * (transmat[dic[k], dic[j]] / speech_list[k]) * (
-                        word_list[string[i]][j] / speech_list[j])
+            now_prob = dp[i - 1, dic[k]] * (transmat[dic[k], dic[j]] / speech_list[k]) * (word_list[string[i]][j] / speech_list[j])
             if now_prob > max_prob:
                 max_prob = now_prob
                 max_state = k

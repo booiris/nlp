@@ -29,5 +29,5 @@ for word in word_list:
 
 print("非兼类词数量:",cnt1)
 print("兼类词数量:",cnt2)
-print("科学:",word_list["科学"])
-print("方便:",word_list["方便"])
+print("想法:",word_list["想法"])
+print("要求:",word_list["要求"])
