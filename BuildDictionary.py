@@ -1,6 +1,7 @@
 import pickle
 import string
 
+
 f = open("varname.txt", "rb")
 varname = pickle.load(f)
 dic = varname["dic"]
@@ -21,7 +22,6 @@ for word in word_list:
                 break
         if flag:
             cnt1 += 1
-
     else:
         temp = sorted(word_list[word].items(), key=lambda item: item[1], reverse=True)
         word_list[word] = dict(temp)
@@ -29,5 +29,5 @@ for word in word_list:
 
 print("非兼类词数量:",cnt1)
 print("兼类词数量:",cnt2)
-print("想法:",word_list["想法"])
-print("要求:",word_list["要求"])
+print("科学:",word_list["科学"])
+print("方便:",word_list["方便"])
