@@ -7,7 +7,7 @@ def analysis():
     sum_cnt = 0
     real_cnt = 0
     pattern = r',|\.|/|;|\'|`|\[|\]|<|>|\?|:|"|\{|\}|\~|!|@|#|\$|%|\^|&|\(|\)|-|=|\_|\+|，|。|、|；|‘|’|【|】|·|！| |…|（|）|——|《|》|：|\n|\r|．|”|“|『|』'
-    with open("Jieba/Jieba_out.txt", "r", encoding='utf-8') as predict_f:
+    with open("Dictionary/Dictionary_out.txt", "r", encoding='utf-8') as predict_f:
         linenumber = 1
         for predict_line in predict_f:
             real_line = linecache.getline("File/real_data.txt", linenumber)

@@ -7,7 +7,7 @@ def build_trie():
 
     dic = {}
     now = dic
-    with open("../File/dict.txt", "r", encoding='utf-8') as f:
+    with open("Dict/dict.txt", "r", encoding='utf-8') as f:
         for line in f:
             word = line.split()
             now = dic
@@ -17,7 +17,7 @@ def build_trie():
                 now = now[char]
             now[True] = int(word[1])
 
-    with open("../File/dict.p", "wb") as f:
+    with open("Dict/dict.p", "wb") as f:
         pickle.dump(dic, f)
 
 
@@ -101,8 +101,8 @@ def d_ptcp(test_str, dic, add_value=False):
     return res
 
 
-# build_trie()
-with open("../File/dict.p", "rb") as f:
+build_trie()
+with open("Dict/dict.p", "rb") as f:
     dic = pickle.load(f)
 
 out = ""
