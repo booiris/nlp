@@ -4,7 +4,7 @@ dic = {}
 pattern = r',|\.|/|;|\'|`|\[|\]|<|>|\?|:|"|\{|\}|\~|!|@|#|\$|%|\^|&|\(|\)|-|=|\_|\+|，|。|、|；|‘|’|【|】|·|！| |…|（|）|——|《|》|：|\n|\r|．|”|“|『|』|[１-９]'
 with open("train_dict.txt", "r", encoding='utf-8') as f:
     for line in f:
-        now_str = re.split(pattern, line)
+        now_str = re.split(pattern, line)  # 处理标点和数字
         for word in now_str:
             if word == '' or word.isdigit():
                 continue
