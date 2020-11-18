@@ -1,5 +1,4 @@
 import pickle
-import re
 
 
 def build_trie():
@@ -64,57 +63,55 @@ def dijkstra(p, add_value):
 
 def d_ptcp(test_str, dic, add_value=False):
     # 采用最短路匹配实现字典分词
-
-    pattern = r'(,|\.|/|;|\'|`|\[|\]|<|>|\?|:|"|\{|\}|\~|!|@|#|\$|%|\^|&|\(|\)|-|=|\_|\+|，|。|、|；|‘|’|【|】|·|！| |…|（|）|——|\d+|《|》|：|\n|\r|．|”|“|『|』|[a-z]|[A-Z])'
-    test_str = re.split(pattern, test_str)
     res = ""
-    for word in test_str:
-        if word == '':
-            continue
-        temp = re.split(pattern, word)
-        if len(temp) != 1 or word.isdigit():
-            res += word + ' '
-            continue
-        p = [[] for _ in range(len(word) + 1)]
-        for i in range(len(word)):
-            j = i
-            if word[j] not in dic:
-                continue
-            now = dic[word[j]]
-            while j < len(word):
-                if True in now:
-                    node = [j + 1, now[True]]
+    word = ""
+    if test_str[len(test_str) - 1] != '\n':
+        test_str += '\n'
+    for char in test_str:
+        if '\u4e00' <= char <= '\u9fa5':
+            word += char
+        else:
+            if word != "":
+                p = [[] for _ in range(len(word) + 1)]
+                for i in range(len(word)):
+                    j = i
+                    node = [j + 1, 0]
                     p[i].append(node)
-                j += 1
-                if j == len(word) or word[j] not in now:
-                    break
-                now = now[word[j]]
+                    if word[j] not in dic:
+                        continue
+                    now = dic[word[j]]
+                    while j < len(word):
+                        if True in now:
+                            node = [j + 1, now[True]]
+                            p[i].append(node)
+                        j += 1
+                        if j == len(word) or word[j] not in now:
+                            break
+                        now = now[word[j]]
 
-        path = dijkstra(p, add_value)
-        for i in range(len(path) - 1):
-            s = path[i]
-            e = path[i + 1]
-            for j in range(s, e):
-                res += word[j]
-            res += ' '
+                path = dijkstra(p, add_value)
+                for i in range(len(path) - 1):
+                    s = path[i]
+                    e = path[i + 1]
+                    for j in range(s, e):
+                        res += word[j]
+                    res += ' '
+            if char != '\n':
+                res += char + ' '
+            word = ""
 
-    return res
+    return res + '\n'
 
 
-build_trie()
-with open("Dict/dict.p", "rb") as f:
-    dic = pickle.load(f)
+# build_trie()
 
-out = ""
-with open("../File/test_data.txt", "r", encoding='utf-8') as f:
-    f1 = open("Dictionary_out.txt", "w+", encoding='utf-8')
-    cnt = 0
-    for line in f:
-        res = d_ptcp(line, dic, False)
-        if cnt < 10:
-            print(line)
-            print(res)
-        cnt += 1
-        f1.writelines(res)
-    f1.close()
+# with open("Dict/dict.p", "rb") as f:
+#     dic = pickle.load(f)
 
+# with open("../File/test_data.txt", "r", encoding='utf-8') as f:
+#     f1 = open("Dictionary_out.txt", "w+", encoding='utf-8')
+#     for line in f:
+#         f1.writelines(d_ptcp(line, dic, True))
+#     f1.close()
+
+# print(d_ptcp("编辑代码一般是用插入模式",dic,True))
