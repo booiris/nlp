@@ -57,4 +57,4 @@ def analysis(Filename):
     return P, R, F1
 
 
-# analysis()
+analysis("Statistics/Statistics_out.txt")

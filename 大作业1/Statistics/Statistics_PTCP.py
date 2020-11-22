@@ -62,12 +62,12 @@ def s_ptcp(test_str, probs):
     return res + "\n"
 
 
-# with open("prob/probs.p", "rb") as f:
-#     probs = pickle.load(f)
+with open("prob/probs.p", "rb") as f:
+    probs = pickle.load(f)
 
-# with open("../File/test_data.txt", "r", encoding='utf-8') as f:
-#     f1 = open("Statistics_out.txt", "w+", encoding='utf-8')
-#     for line in f:
-#         f1.writelines(s_ptcp(line, probs))
-#     f1.close()
-# print(s_ptcp("编辑代码一般是用插入模式", probs))
+with open("../File/test_data.txt", "r", encoding='utf-8') as f:
+    f1 = open("Statistics_out.txt", "w+", encoding='utf-8')
+    for line in f:
+        f1.writelines(s_ptcp(line, probs))
+    f1.close()
+print(s_ptcp("编辑代码一般是用插入模式", probs))
