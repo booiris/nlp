@@ -1,4 +1,4 @@
-# data生成real_data和test_data和speech_test_data      train_data生成train_dict和train_prob
+# data生成real_data和test_data和speech_test_data      train_data生成train_dict和train_prob和ner_prob
 
 # 生成test_data
 # res = ""
@@ -19,28 +19,28 @@
 #     f.writelines(res)
 
 # 生成speech_test_data
-res = ""
-with open("data.txt", "r", encoding='utf-8') as f:
-    for line in f:
-        word = line.split()
-        for i in range(len(word)):
-            if i == 0:
-                continue
-            char = word[i]
-            char = char.split("/")
-            cnt = 0
-            for b in char[0]:
-                if not '\u4e00' <= b <= '\u9fa5':
-                    res += b
-                    cnt += 1
-                else:
-                    break
-            res += ' ' + char[0][cnt:] + ' '
-            if ']' in char[1]:
-                res += '] '
-        res += '\n'
-with open("speech_test_data.txt", "w+", encoding='utf-8') as f:
-    f.writelines(res)
+# res = ""
+# with open("data.txt", "r", encoding='utf-8') as f:
+#     for line in f:
+#         word = line.split()
+#         for i in range(len(word)):
+#             if i == 0:
+#                 continue
+#             char = word[i]
+#             char = char.split("/")
+#             cnt = 0
+#             for b in char[0]:
+#                 if not '\u4e00' <= b <= '\u9fa5':
+#                     res += b
+#                     cnt += 1
+#                 else:
+#                     break
+#             res += ' ' + char[0][cnt:] + ' '
+#             if ']' in char[1]:
+#                 res += '] '
+#         res += '\n'
+# with open("speech_test_data.txt", "w+", encoding='utf-8') as f:
+#     f.writelines(res)
 
 # 生成real_data
 # with open("data.txt", "r", encoding='utf-8') as f:
@@ -104,3 +104,16 @@ with open("speech_test_data.txt", "w+", encoding='utf-8') as f:
 #         res += '\n'
 #         f1.writelines(res)
 #     f1.close()
+
+# 生成 ner_prob
+with open("train_data.txt", "r", encoding='utf-8') as f:
+    f1 = open("ner_prob.txt", "w+", encoding='utf-8')
+    for line in f:
+        word = line.split()
+        res = ""
+        for i in range(len(word)):
+            if i == 0:
+                continue
+            word_list = word[i].split("/")
+            if "]"in word_list:
+                pass

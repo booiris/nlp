@@ -58,4 +58,4 @@ def speech_analysis(Filename):
     return P, R, F1
 
 
-speech_analysis("Speech/Statistics_Speech_out.txt")
+speech_analysis("Speech/Divide_Speech_out.txt")

@@ -19,7 +19,6 @@ with open("train_prob.txt", "r", encoding='utf-8') as f:
 begin_prob = {key: 0 for key in s}
 trans_prob = {key1: {key2: 0 for key2 in s} for key1 in s}
 emit_prob = {key: {} for key in s}
-one_word_prob = {key: 0 for key in s}
 
 with open("train_prob.txt", "r", encoding='utf-8') as f:
     for line in f:
@@ -43,38 +42,27 @@ with open("train_prob.txt", "r", encoding='utf-8') as f:
                 if now_str not in emit_prob[now_state]:
                     emit_prob[now_state][now_str] = 0
                 emit_prob[now_state][now_str] += 1
-                one_word_prob[now_state] += 1
 
 temp_sum = 0
-temp_sum1 = 0
 for key in begin_prob:
     temp_sum += begin_prob[key]
-    temp_sum1 += one_word_prob[key]
 for key in begin_prob:
     begin_prob[key] /= temp_sum
-    one_word_prob[key] /= temp_sum1
     if begin_prob[key] != 0:
         begin_prob[key] = math.log(begin_prob[key])
     else:
         begin_prob[key] = -3.14 * 1e+100
-    if one_word_prob[key] != 0:
-        one_word_prob[key] = math.log(one_word_prob[key])
-    else:
-        one_word_prob[key] = -3.14 * 1e+100
 
-temp_sum = 0
 for i in trans_prob:
+    temp_sum = 0
     for j in trans_prob[i]:
         temp_sum += trans_prob[i][j]
-for i in trans_prob:
     for j in trans_prob[i]:
         trans_prob[i][j] /= temp_sum
         if trans_prob[i][j] != 0:
             trans_prob[i][j] = math.log(trans_prob[i][j])
         else:
             trans_prob[i][j] = -3.14 * 1e+100
-        trans_prob[i][j] -= one_word_prob[i]
-print(trans_prob)
 
 for i in emit_prob:
     temp_sum = maxnum

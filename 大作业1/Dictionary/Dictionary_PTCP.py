@@ -105,13 +105,13 @@ def d_ptcp(test_str, dic, add_value=False):
 
 # build_trie()
 
-# with open("Dict/dict.p", "rb") as f:
-#     dic = pickle.load(f)
+with open("Dict/dict.p", "rb") as f:
+    dic = pickle.load(f)
 
-# with open("../File/test_data.txt", "r", encoding='utf-8') as f:
-#     f1 = open("Dictionary_out.txt", "w+", encoding='utf-8')
-#     for line in f:
-#         f1.writelines(d_ptcp(line, dic, True))
-#     f1.close()
+with open("../File/test_data.txt", "r", encoding='utf-8') as f:
+    f1 = open("Dictionary_out.txt", "w+", encoding='utf-8')
+    for line in f:
+        f1.writelines(d_ptcp(line, dic, True))
+    f1.close()
 
-# print(d_ptcp("编辑代码一般是用插入模式",dic,True))
+print(d_ptcp("编辑代码一般是用插入模式",dic,True))

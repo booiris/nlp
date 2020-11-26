@@ -14,7 +14,8 @@ def s_ptcp(test_str, probs):
         if '\u4e00' <= char <= '\u9fa5':
             word += char
         else:
-            if word != "":
+            if word:
+                print(word)
                 dp = [{} for _ in range(len(word))]  # 初始概率矩阵
                 dp[0]["B"] = begin_prob["B"] + emit_prob["B"][word[0] if word[0] in emit_prob["B"] else False]
                 dp[0]["M"] = begin_prob["M"] + emit_prob["M"][word[0] if word[0] in emit_prob["M"] else False]
@@ -45,7 +46,7 @@ def s_ptcp(test_str, probs):
                         path[i][j] = newpath
 
                 prob = -3.14 * 1e+100
-                for state in ['S','E']:
+                for state in ['S', 'E']:
                     if dp[len(word) - 1][state] > prob:
                         prob = dp[len(word) - 1][state]
                         res_state = state

@@ -19,12 +19,6 @@ emit_prob = {
     'E': {},
     'S': {}
 }
-one_word_prob = {
-    'B': 0.0,
-    'M': 0.0,
-    'E': 0.0,
-    'S': 0.0
-}
 maxnum = 21003  # gbk编码最大汉字个数
 
 with open("train_dict.txt", "r", encoding='utf-8') as f:
@@ -46,7 +40,6 @@ with open("train_dict.txt", "r", encoding='utf-8') as f:
                     else:
                         trans_prob[father]['S'] += 1
                     father = 'S'
-                    one_word_prob['S'] += 1
                 else:
                     for j in range(len(now_str)):
                         char = now_str[j]
@@ -66,38 +59,31 @@ with open("train_dict.txt", "r", encoding='utf-8') as f:
                         if char not in emit_prob[now_state]:
                             emit_prob[now_state][char] = 0
                         emit_prob[now_state][char] += 1
-                        one_word_prob[now_state] += 1
-
+            else:
+                father = '#'
+print(trans_prob)
 temp_sum = 0
-temp_sum1 = 0
 for key in begin_prob:
     temp_sum += begin_prob[key]
-    temp_sum1 += one_word_prob[key]
 for key in begin_prob:
     begin_prob[key] /= temp_sum
-    one_word_prob[key] /= temp_sum1
     if begin_prob[key] != 0:
         begin_prob[key] = math.log(begin_prob[key])
     else:
         begin_prob[key] = -3.14 * 1e+100
-    if one_word_prob[key] != 0:
-        one_word_prob[key] = math.log(one_word_prob[key])
-    else:
-        one_word_prob[key] = -3.14 * 1e+100
 
-temp_sum = 0
+
 for i in trans_prob:
+    temp_sum = 0
     for j in trans_prob[i]:
         temp_sum += trans_prob[i][j]
-for i in trans_prob:
     for j in trans_prob[i]:
         trans_prob[i][j] /= temp_sum
         if trans_prob[i][j] != 0:
             trans_prob[i][j] = math.log(trans_prob[i][j])
         else:
             trans_prob[i][j] = -3.14 * 1e+100
-        trans_prob[i][j] -= one_word_prob[i]
-print(trans_prob)
+
 for i in emit_prob:
     temp_sum = maxnum
     for j in emit_prob[i]:

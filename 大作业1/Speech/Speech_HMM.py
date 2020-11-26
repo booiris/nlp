@@ -87,10 +87,8 @@ def speech_hmm(test_str, probs):
 with open("prob/probs.p", "rb") as f:
     probs = pickle.load(f)
 
-with open("../Statistics/Statistics_out.txt", "r", encoding='utf-8') as f:
-    f1 = open("Speech_out.txt", "w+", encoding='utf-8')
-    f1.close()
-    f1 = open("Statistics_Speech_out.txt", "w+", encoding='utf-8')
+with open("../File/speech_test_data.txt", "r", encoding='utf-8') as f:
+    f1 = open("Divide_Speech_out.txt", "w+", encoding='utf-8')
     for line in f:
         res = speech_hmm(line, probs)
         # print(res)
