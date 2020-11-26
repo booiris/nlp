@@ -115,5 +115,5 @@ with open("train_data.txt", "r", encoding='utf-8') as f:
             if i == 0:
                 continue
             word_list = word[i].split("/")
-            if "]"in word_list:
+            if "]" in word_list:
                 pass
