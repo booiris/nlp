@@ -1,9 +1,10 @@
 import math
 import pickle
 
-maxnum = 4e5
+maxnum = 4e5 # 词的总数位无法统计，取新华字典中出现的词的近似值
 s = set()
-with open("train_prob.txt", "r", encoding='utf-8') as f:
+# 第一遍遍历获取训练集中有多少个词性，便于构建概率矩阵
+with open("../../File/train_prob.txt", "r", encoding='utf-8') as f:
     for line in f:
         line = line.split()
         for word in line:
@@ -20,7 +21,8 @@ begin_prob = {key: 0 for key in s}
 trans_prob = {key1: {key2: 0 for key2 in s} for key1 in s}
 emit_prob = {key: {} for key in s}
 
-with open("train_prob.txt", "r", encoding='utf-8') as f:
+# 第二遍遍历，训练参数，获取概率矩阵
+with open("../../File/train_prob.txt", "r", encoding='utf-8') as f:
     for line in f:
         father = '#'
         line = line.split()
@@ -43,6 +45,7 @@ with open("train_prob.txt", "r", encoding='utf-8') as f:
                     emit_prob[now_state][now_str] = 0
                 emit_prob[now_state][now_str] += 1
 
+# 计算初始概率矩阵
 temp_sum = 0
 for key in begin_prob:
     temp_sum += begin_prob[key]
@@ -53,6 +56,7 @@ for key in begin_prob:
     else:
         begin_prob[key] = -3.14 * 1e+100
 
+# 计算转移概率矩阵
 for i in trans_prob:
     temp_sum = 0
     for j in trans_prob[i]:
@@ -64,6 +68,7 @@ for i in trans_prob:
         else:
             trans_prob[i][j] = -3.14 * 1e+100
 
+# 计算发射概率矩阵
 for i in emit_prob:
     temp_sum = maxnum
     for j in emit_prob[i]:

@@ -16,11 +16,13 @@ def build_trie():
                 now = now[char]
             now[True] = int(word[1])
 
+    # 将结果缓存到磁盘上
     with open("Dict/dict.p", "wb") as f:
         pickle.dump(dic, f)
 
 
 def dijkstra(p, add_value):
+    # 最短路算法，求解分词的短路路径
     dis = [0x3f3f3f3f for _ in range(len(p))]
     vis = [False for _ in range(len(p))]
     father = [-1 for _ in range(len(p))]
@@ -46,11 +48,11 @@ def dijkstra(p, add_value):
                 dis[j[0]] = dis[now] + v
                 cost[j[0]] = cost[now] + j[1]
                 father[j[0]] = now
-
+            # 加入词频作为评估值，输出的结果一定是词序列的频率和最高的结果
             if add_value and dis[j[0]] == dis[now] + v and cost[j[0]] < cost[now] + j[1]:
                 cost[j[0]] = cost[now] + j[1]
                 father[j[0]] = now
-
+    # 回溯记录路径
     path = []
     now = len(p) - 1
     while now != -1:
@@ -68,6 +70,7 @@ def d_ptcp(test_str, dic, add_value=False):
     if test_str[len(test_str) - 1] != '\n':
         test_str += '\n'
     for char in test_str:
+        # 只将中文加入分词序列，其余标点，数字等全部单独分隔处理
         if '\u4e00' <= char <= '\u9fa5':
             word += char
         else:
@@ -76,6 +79,7 @@ def d_ptcp(test_str, dic, add_value=False):
                 for i in range(len(word)):
                     j = i
                     node = [j + 1, 0]
+                    # 根据中文串构建DAG
                     p[i].append(node)
                     if word[j] not in dic:
                         continue
@@ -89,6 +93,7 @@ def d_ptcp(test_str, dic, add_value=False):
                             break
                         now = now[word[j]]
 
+                # 调用最短路算法求出结果
                 path = dijkstra(p, add_value)
                 for i in range(len(path) - 1):
                     s = path[i]
@@ -105,13 +110,13 @@ def d_ptcp(test_str, dic, add_value=False):
 
 # build_trie()
 
-with open("Dict/dict.p", "rb") as f:
-    dic = pickle.load(f)
-
-with open("../File/test_data.txt", "r", encoding='utf-8') as f:
-    f1 = open("Dictionary_out.txt", "w+", encoding='utf-8')
-    for line in f:
-        f1.writelines(d_ptcp(line, dic, True))
-    f1.close()
-
-print(d_ptcp("编辑代码一般是用插入模式",dic,True))
+# with open("Dict/dict.p", "rb") as f:
+#     dic = pickle.load(f)
+#
+# with open("../File/test_data.txt", "r", encoding='utf-8') as f:
+#     f1 = open("Dictionary_out.txt", "w+", encoding='utf-8')
+#     for line in f:
+#         f1.writelines(d_ptcp(line, dic, True))
+#     f1.close()
+#
+# print(d_ptcp("编辑代码一般是用插入模式",dic,True))

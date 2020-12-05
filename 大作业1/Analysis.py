@@ -2,9 +2,10 @@ import linecache
 
 
 def analysis(Filename):
-    correct_cnt = 0
-    sum_cnt = 0
-    real_cnt = 0
+    # 计算正确率、召回率，f1值
+    correct_cnt = 0  # 输出结果正确个数
+    sum_cnt = 0  # 输出结果总个数
+    real_cnt = 0  # 测试集实际的结果个数
     with open(Filename, "r", encoding='utf-8') as predict_f:
         linenumber = 1
         for predict_line in predict_f:
@@ -15,6 +16,7 @@ def analysis(Filename):
             for word in real_line:
                 word = word.split("/")
                 now_str = ""
+                # 只把中文加入序列进行统计
                 for char in word[0]:
                     if '\u4e00' <= char <= '\u9fa5':
                         now_str += char
@@ -29,6 +31,7 @@ def analysis(Filename):
             for word in predict_line:
                 now_str = ""
                 for char in word:
+                    # 只把中文加入序列进行统计
                     if '\u4e00' <= char <= '\u9fa5':
                         now_str += char
                 if now_str:
@@ -50,11 +53,10 @@ def analysis(Filename):
     P = correct_cnt / sum_cnt
     R = correct_cnt / real_cnt
     F1 = (2 * P * R) / (P + R)
-    print("%.3f%%" % (P * 100))
-    print("%.3f%%" % (R * 100))
-    print("%.3f%%" % (F1 * 100))
+    print("正确率：", "%.3f%%" % (P * 100))
+    print("召回率：", "%.3f%%" % (R * 100))
+    print("F1值：", "%.3f%%" % (F1 * 100))
 
     return P, R, F1
 
-
-analysis("Statistics/Statistics_out.txt")
+# analysis("Statistics/Statistics_out.txt")

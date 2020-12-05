@@ -19,10 +19,12 @@ emit_prob = {
     'E': {},
     'S': {}
 }
-maxnum = 21003  # gbk编码最大汉字个数
+maxnum = 21003  # gbk编码最大汉字个数,用作加一平滑的总数值
 
-with open("train_dict.txt", "r", encoding='utf-8') as f:
+with open("../../File/train_dict.txt", "r", encoding='utf-8') as f:
+    # 计算hmm所需的参数矩阵
     for line in f:
+        # father保存上一字的状态，用来计算转移矩阵，father为'#'时，表示该字为开头
         father = '#'
         line = line.split()
         for word in line:
@@ -31,6 +33,7 @@ with open("train_dict.txt", "r", encoding='utf-8') as f:
                 if '\u4e00' <= char <= '\u9fa5':
                     now_str += char
             if now_str:
+                # 出现单独的字作为一个词
                 if len(now_str) == 1:
                     if now_str not in emit_prob['S']:
                         emit_prob['S'][now_str] = 0
@@ -61,7 +64,8 @@ with open("train_dict.txt", "r", encoding='utf-8') as f:
                         emit_prob[now_state][char] += 1
             else:
                 father = '#'
-print(trans_prob)
+
+# 计算初始概率矩阵
 temp_sum = 0
 for key in begin_prob:
     temp_sum += begin_prob[key]
@@ -72,7 +76,7 @@ for key in begin_prob:
     else:
         begin_prob[key] = -3.14 * 1e+100
 
-
+# 计算转移概率矩阵
 for i in trans_prob:
     temp_sum = 0
     for j in trans_prob[i]:
@@ -84,13 +88,14 @@ for i in trans_prob:
         else:
             trans_prob[i][j] = -3.14 * 1e+100
 
+# 计算发射概率矩阵
 for i in emit_prob:
     temp_sum = maxnum
     for j in emit_prob[i]:
         temp_sum += emit_prob[i][j]
     emit_prob[i][False] = 0
     for j in emit_prob[i]:
-        emit_prob[i][j] += 1
+        emit_prob[i][j] += 1 # 加一平滑
         emit_prob[i][j] /= temp_sum
         emit_prob[i][j] = math.log(emit_prob[i][j])
 
@@ -99,5 +104,6 @@ probs = {
     "trans_prob": trans_prob,
     "emit_prob": emit_prob
 }
+# 缓存生成的概率矩阵
 with open("probs.p", "wb") as f:
     pickle.dump(probs, f)

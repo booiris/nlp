@@ -1,4 +1,7 @@
-# data生成real_data和test_data和speech_test_data      train_data生成train_dict和train_prob和ner_prob
+# data生成real_data和test_data和speech_test_data和real_ner_data
+# real_data是测试集真实结果，test_data是测试集,speech_test_data是未标注词性的分词结果，用于词性标注
+# train_data生成train_dict和train_prob和ner_prob
+# tran_dict是用于训练词典分词的词典，train_prob用于训练统计分词的参数
 
 # 生成test_data
 # res = ""
@@ -106,14 +109,27 @@
 #     f1.close()
 
 # 生成 ner_prob
-with open("train_data.txt", "r", encoding='utf-8') as f:
-    f1 = open("ner_prob.txt", "w+", encoding='utf-8')
-    for line in f:
-        word = line.split()
-        res = ""
-        for i in range(len(word)):
-            if i == 0:
-                continue
-            word_list = word[i].split("/")
-            if "]" in word_list:
-                pass
+# with open("train_data.txt", "r", encoding='utf-8') as f:
+#     f1 = open("ner_prob.txt", "w+", encoding='utf-8')
+#     for line in f:
+#         flag = False
+#         word = line.split()
+#         res = ""
+#         for i in range(len(word)):
+#             if i == 0:
+#                 continue
+#             word_list = word[i].split("/")
+#             if '[' in word_list[0]:
+#                 res += word_list[0]
+#                 flag = True
+#                 continue
+#             if ']' in word_list[1]:
+#                 res += word_list[0] + ']' + '/nt '
+#                 flag = False
+#                 continue
+#             if flag:
+#                 res += word_list[0]
+#                 continue
+#             else:
+#                 res += word[i] + ' '
+#         f1.writelines(res + '\n')

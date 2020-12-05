@@ -1,7 +1,8 @@
 import re
 
 dic = {}
-with open("train_dict.txt", "r", encoding='utf-8') as f:
+with open("../../File/train_dict.txt", "r", encoding='utf-8') as f:
+    # 构建字典
     for line in f:
         line = line.split()
         for word in line:
