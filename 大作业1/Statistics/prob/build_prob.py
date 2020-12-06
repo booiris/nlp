@@ -62,8 +62,6 @@ with open("../../File/train_dict.txt", "r", encoding='utf-8') as f:
                         if char not in emit_prob[now_state]:
                             emit_prob[now_state][char] = 0
                         emit_prob[now_state][char] += 1
-            else:
-                father = '#'
 
 # 计算初始概率矩阵
 temp_sum = 0

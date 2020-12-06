@@ -40,17 +40,14 @@ def dijkstra(p, add_value):
             break
         vis[now] = True
         for j in p[now]:
-            if now == j[0]:
-                v = 0
-            else:
-                v = 1
+            v = j[1]
             if dis[j[0]] > dis[now] + v:
                 dis[j[0]] = dis[now] + v
                 cost[j[0]] = cost[now] + j[1]
                 father[j[0]] = now
             # 加入词频作为评估值，输出的结果一定是词序列的频率和最高的结果
-            if add_value and dis[j[0]] == dis[now] + v and cost[j[0]] < cost[now] + j[1]:
-                cost[j[0]] = cost[now] + j[1]
+            if add_value and dis[j[0]] == dis[now] + v and cost[j[0]] < cost[now] + j[2]:
+                cost[j[0]] = cost[now] + j[2]
                 father[j[0]] = now
     # 回溯记录路径
     path = []
@@ -78,15 +75,16 @@ def d_ptcp(test_str, dic, add_value=False):
                 p = [[] for _ in range(len(word) + 1)]
                 for i in range(len(word)):
                     j = i
-                    node = [j + 1, 0]
+                    node = [j + 1, 1e4, 0]
                     # 根据中文串构建DAG
                     p[i].append(node)
                     if word[j] not in dic:
                         continue
                     now = dic[word[j]]
+                    # 遍历字典树
                     while j < len(word):
                         if True in now:
-                            node = [j + 1, now[True]]
+                            node = [j + 1, 1, now[True]]
                             p[i].append(node)
                         j += 1
                         if j == len(word) or word[j] not in now:
@@ -119,4 +117,4 @@ def d_ptcp(test_str, dic, add_value=False):
 #         f1.writelines(d_ptcp(line, dic, True))
 #     f1.close()
 #
-# print(d_ptcp("编辑代码一般是用插入模式",dic,True))
+# print(d_ptcp("第九届", dic, True))

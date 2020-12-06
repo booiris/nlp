@@ -39,7 +39,7 @@ def analysis(Filename):
                     predict_list.append((now1, now1 + str_len - 1))
                     now1 = now1 + str_len
             if now != now1:
-                print("asdfsadf")
+                print("line==",linenumber)
 
             correct_cnt += len(set(predict_list) & set(real_list))
             sum_cnt += len(predict_list)

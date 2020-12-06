@@ -69,6 +69,111 @@
 #         f1.writelines(res)
 #     f1.close()
 
+# 生成real_ner_data
+# with open("data.txt", "r", encoding='utf-8') as f:
+#     save = []
+#     f1 = open("real_ner_data.txt", "w+", encoding='utf-8')
+#     for line in f:
+#         save.clear()
+#         now = '#'
+#         word = line.split()
+#         res = ""
+#         for i in range(len(word)):
+#             if i == 0:
+#                 continue
+#             temp_str = ""
+#             word_list = word[i].split("/")
+#             if word_list[1] == "nt":
+#                 if now != "nt":
+#                     for j in save:
+#                         temp_str += j
+#                     save.clear()
+#                 save.append(word_list[0])
+#             elif word_list[1] == "nr":
+#                 if now != "nr":
+#                     for j in save:
+#                         temp_str += j
+#                     save.clear()
+#                 save.append(word_list[0])
+#             elif word_list[1] == "ns":
+#                 if now != "ns":
+#                     for j in save:
+#                         temp_str += j
+#                     save.clear()
+#                 save.append(word_list[0])
+#             else:
+#                 for j in save:
+#                     temp_str += j
+#                 save.clear()
+#                 save.append(word_list[0])
+#             if now == 'nr' or now == 'nt' or now == 'ns':
+#                 if now == 'nr' and temp_str:
+#                     if len(temp_str) == 1:
+#                         res += temp_str[0] + '/S-PER '
+#                     else:
+#                         res += temp_str[0] + '/B-PER '
+#                         for j in range(1, len(temp_str) - 1):
+#                             res += temp_str[j] + '/I-PER '
+#                         res += temp_str[len(temp_str) - 1] + 'E-PER '
+#                 if now == 'nt' and temp_str:
+#                     if len(temp_str) == 1:
+#                         res += temp_str[0] + '/S-ORG '
+#                     else:
+#                         res += temp_str[0] + '/B-ORG '
+#                         for j in range(1, len(temp_str) - 1):
+#                             res += temp_str[j] + '/I-ORG '
+#                         res += temp_str[len(temp_str) - 1] + 'E-ORG '
+#                 if now == 'ns' and temp_str:
+#                     if len(temp_str) == 1:
+#                         res += temp_str[0] + '/S-LOC '
+#                     else:
+#                         res += temp_str[0] + '/B-LOC '
+#                         for j in range(1, len(temp_str) - 1):
+#                             res += temp_str[j] + '/I-LOC '
+#                         res += temp_str[len(temp_str) - 1] + 'E-LOC '
+#             else:
+#                 for j in temp_str:
+#                     res += j + '/o '
+#
+#             now = word_list[1]
+#
+#         temp_str = ""
+#         for j in save:
+#             temp_str += j
+#         save.clear()
+#         if now == 'nr' or now == 'nt' or now == 'ns':
+#             if now == 'nr' and temp_str:
+#                 if len(temp_str) == 1:
+#                     res += temp_str[0] + '/S-PER '
+#                 else:
+#                     res += temp_str[0] + '/B-PER '
+#                     for j in range(1, len(temp_str) - 1):
+#                         res += temp_str[j] + '/I-PER '
+#                     res += temp_str[len(temp_str) - 1] + 'E-PER '
+#             if now == 'nt' and temp_str:
+#                 if len(temp_str) == 1:
+#                     res += temp_str[0] + '/S-ORG '
+#                 else:
+#                     res += temp_str[0] + '/B-ORG '
+#                     for j in range(1, len(temp_str) - 1):
+#                         res += temp_str[j] + '/I-ORG '
+#                     res += temp_str[len(temp_str) - 1] + 'E-ORG '
+#             if now == 'ns' and temp_str:
+#                 if len(temp_str) == 1:
+#                     res += temp_str[0] + '/S-LOC '
+#                 else:
+#                     res += temp_str[0] + '/B-LOC '
+#                     for j in range(1, len(temp_str) - 1):
+#                         res += temp_str[j] + '/I-LOC '
+#                     res += temp_str[len(temp_str) - 1] + 'E-LOC '
+#         else:
+#             for j in temp_str:
+#                 res += j + '/o '
+#
+#         res += '\n'
+#         f1.writelines(res)
+#     f1.close()
+
 # 生成train_dict
 # with open("train_data.txt", "r", encoding='utf-8') as f:
 #     f1 = open("train_dict.txt", "w+", encoding='utf-8')
