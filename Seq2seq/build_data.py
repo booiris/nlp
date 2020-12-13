@@ -9,26 +9,19 @@ import time
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-path_to_file = "File/data.txt"
-
-
-def unicode_to_ascii(s):
-    return ''.join(c for c in unicodedata.normalize('NFD', s)
-                   if unicodedata.category(c) != 'Mn')
+path_to_file = "File/train_data.txt"
 
 
 def preprocess_sentence(w):
-    w = unicode_to_ascii(w.lower().strip())
     # 在单词与跟在其后的标点符号之间插入一个空格
 
-    w = re.sub(r"([?.!,。！？，])", r" \1 ", w)
+    w = re.sub(r"([?.!,])", r" \1 ", w)
     w = re.sub(r'[" "]+', " ", w)
 
     # 除了 (a-z, A-Z, ".", "?", "!", ",")，将所有字符替换为空格
     w = re.sub(r"[^a-zA-Z?.!,\u4e00-\u9fa5。！？，]+", " ", w)
 
     w = w.rstrip().strip()
-
     # 给句子加上开始和结束标记
     # 以便模型知道何时开始和结束预测
     w = '<start> ' + w + '  <end>'
@@ -37,14 +30,9 @@ def preprocess_sentence(w):
 
 def create_dataset(path, num_examples):
     lines = io.open(path, encoding='UTF-8').read().strip().split('\n')
-    word = [[] for _ in lines[:num_examples]]
-    cnt = 0
-    for l in lines[:num_examples]:
-        w = l.split("\t")
-        word[cnt].append(preprocess_sentence(w[0]))
-        word[cnt].append(preprocess_sentence(w[1]))
-        cnt += 1
-    return zip(*word)
+
+    word_pairs = [[preprocess_sentence(w) for w in l.split('\t')] for l in lines[:num_examples]]
+    return zip(*word_pairs)
 
 
 def max_length(tensor):
@@ -74,7 +62,7 @@ def load_dataset(path, num_examples=None):
     return input_tensor, target_tensor, inp_lang_tokenizer, targ_lang_tokenizer
 
 
-input_tensor_train, target_tensor_train, inp_lang, targ_lang = load_dataset("File/data.txt", None)
+input_tensor_train, target_tensor_train, inp_lang, targ_lang = load_dataset(path_to_file, None)
 max_length_targ, max_length_inp = max_length(target_tensor_train), max_length(input_tensor_train)
 
 BUFFER_SIZE = len(input_tensor_train)
@@ -89,7 +77,6 @@ dataset = tf.data.Dataset.from_tensor_slices((input_tensor_train, target_tensor_
 dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
 
 example_input_batch, example_target_batch = next(iter(dataset))
-
 
 class Encoder(tf.keras.Model):
     def __init__(self, vocab_size, embedding_dim, enc_units, batch_sz):
@@ -210,8 +197,8 @@ checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
 checkpoint = tf.train.Checkpoint(optimizer=optimizer,
                                  encoder=encoder,
                                  decoder=decoder)
-#
-#
+
+
 # @tf.function
 # def train_step(inp, targ, enc_hidden):
 #     loss = 0
@@ -242,7 +229,7 @@ checkpoint = tf.train.Checkpoint(optimizer=optimizer,
 #     optimizer.apply_gradients(zip(gradients, variables))
 #
 #     return batch_loss
-
+#
 # EPOCHS = 10
 #
 # for epoch in range(EPOCHS):
@@ -259,7 +246,7 @@ checkpoint = tf.train.Checkpoint(optimizer=optimizer,
 #         print('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1,
 #                                                      batch,
 #                                                      batch_loss.numpy()))
-#   # 每 2 个周期（epoch），保存（检查点）一次模型
+#   # 保存检查点
 #   if epoch == 9:
 #     checkpoint.save(file_prefix = checkpoint_prefix)
 #
@@ -318,4 +305,4 @@ def translate(sentence):
 
 checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
 
-translate("你好")
+translate("我 去 打 球")

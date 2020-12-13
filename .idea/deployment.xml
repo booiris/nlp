@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="root@hz.matpool.com:27127" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="root@hz.matpool.com:27960 password" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="root@hz.matpool.com:27127">
+      <paths name="root@hz.matpool.com:27960 password">
         <serverdata>
           <mappings>
             <mapping deploy="/mnt/pj1" local="$PROJECT_DIR$" />
           </mappings>
           <excludedPaths>
-            <excludedPath local="true" path="$PROJECT_DIR$/平时作业" />
-            <excludedPath local="true" path="$PROJECT_DIR$/大作业1" />
-            <excludedPath local="true" path="$PROJECT_DIR$/199801" />
-            <excludedPath local="true" path="$PROJECT_DIR$/seq2seq_chatbot_new-master" />
-            <excludedPath local="true" path="$PROJECT_DIR$/Seq2seq/training_checkpoints" />
+            <excludedPath local="true" path="$PROJECT_DIR$/README.md" />
           </excludedPaths>
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>
