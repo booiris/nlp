@@ -9,11 +9,11 @@
       <sourceFolder url="file://$MODULE_DIR$/大作业1/Jieba" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/大作业1/Speech" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/seq2seq_chatbot_new-master" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Seq2seq" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/199801" />
       <excludeFolder url="file://$MODULE_DIR$/corpusZh-master" />
+      <excludeFolder url="file://$MODULE_DIR$/Seq2seq" />
     </content>
-    <orderEntry type="jdk" jdkName="Remote Python 3.7.6 (sftp://root@hz.matpool.com:27960/root/miniconda3/envs/myconda/bin/python3.7)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

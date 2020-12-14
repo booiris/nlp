@@ -1,11 +1,14 @@
 import io
 import os
 import re
-import unicodedata
+import time
 
+import jieba
 import numpy as np
 import tensorflow as tf
-import time
+
+jieba.enable_paddle()
+jieba.set_dictionary('File/dict.txt.big')
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -76,7 +79,6 @@ vocab_tar_size = len(targ_lang.word_index) + 1
 dataset = tf.data.Dataset.from_tensor_slices((input_tensor_train, target_tensor_train)).shuffle(BUFFER_SIZE)
 dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
 
-example_input_batch, example_target_batch = next(iter(dataset))
 
 class Encoder(tf.keras.Model):
     def __init__(self, vocab_size, embedding_dim, enc_units, batch_sz):
@@ -99,10 +101,6 @@ class Encoder(tf.keras.Model):
 
 
 encoder = Encoder(vocab_inp_size, embedding_dim, units, BATCH_SIZE)
-
-# 样本输入
-sample_hidden = encoder.initialize_hidden_state()
-sample_output, sample_hidden = encoder(example_input_batch, sample_hidden)
 
 
 class BahdanauAttention(tf.keras.layers.Layer):
@@ -131,8 +129,7 @@ class BahdanauAttention(tf.keras.layers.Layer):
         context_vector = attention_weights * values
         context_vector = tf.reduce_sum(context_vector, axis=1)
 
-        return context_vector, attention_weights
-
+        return context_vector
 
 
 class Decoder(tf.keras.Model):
@@ -152,7 +149,7 @@ class Decoder(tf.keras.Model):
 
     def call(self, x, hidden, enc_output):
         # 编码器输出 （enc_output） 的形状 == （批大小，最大长度，隐藏层大小）
-        context_vector, attention_weights = self.attention(hidden, enc_output)
+        context_vector = self.attention(hidden, enc_output)
 
         # x 在通过嵌入层后的形状 == （批大小，1，嵌入维度）
         x = self.embedding(x)
@@ -169,13 +166,10 @@ class Decoder(tf.keras.Model):
         # 输出的形状 == （批大小，vocab）
         x = self.fc(output)
 
-        return x, state, attention_weights
+        return x, state
 
 
 decoder = Decoder(vocab_tar_size, embedding_dim, units, BATCH_SIZE)
-
-sample_decoder_output, _, _ = decoder(tf.random.uniform((64, 1)),
-                                      sample_hidden, sample_output)
 
 optimizer = tf.keras.optimizers.Adam()
 loss_object = tf.keras.losses.SparseCategoricalCrossentropy(
@@ -213,7 +207,7 @@ checkpoint = tf.train.Checkpoint(optimizer=optimizer,
 #         # 教师强制 - 将目标词作为下一个输入
 #         for t in range(1, targ.shape[1]):
 #             # 将编码器输出 （enc_output） 传送至解码器
-#             predictions, dec_hidden, _ = decoder(dec_input, dec_hidden, enc_output)
+#             predictions, dec_hidden = decoder(dec_input, dec_hidden, enc_output)
 #
 #             loss += loss_function(targ[:, t], predictions)
 #
@@ -230,35 +224,37 @@ checkpoint = tf.train.Checkpoint(optimizer=optimizer,
 #
 #     return batch_loss
 #
-# EPOCHS = 10
+#
+# EPOCHS = 20
 #
 # for epoch in range(EPOCHS):
-#   start = time.time()
+#     start = time.time()
 #
-#   enc_hidden = encoder.initialize_hidden_state()
-#   total_loss = 0
+#     enc_hidden = encoder.initialize_hidden_state()
+#     total_loss = 0
 #
-#   for (batch, (inp, targ)) in enumerate(dataset.take(steps_per_epoch)):
-#     batch_loss = train_step(inp, targ, enc_hidden)
-#     total_loss += batch_loss
+#     for (batch, (inp, targ)) in enumerate(dataset.take(steps_per_epoch)):
+#         batch_loss = train_step(inp, targ, enc_hidden)
+#         total_loss += batch_loss
 #
-#     if batch % 100 == 0:
-#         print('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1,
-#                                                      batch,
-#                                                      batch_loss.numpy()))
-#   # 保存检查点
-#   if epoch == 9:
-#     checkpoint.save(file_prefix = checkpoint_prefix)
+#         if batch % 100 == 0:
+#             print('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1,
+#                                                          batch,
+#                                                          batch_loss.numpy()))
+#     # 保存检查点
+#     if epoch == 19:
+#         checkpoint.save(file_prefix=checkpoint_prefix)
 #
-#   print('Epoch {} Loss {:.4f}'.format(epoch + 1,
-#                                       total_loss / steps_per_epoch))
-#   print('Time taken for 1 epoch {} sec\n'.format(time.time() - start))
+#     print('Epoch {} Loss {:.4f}'.format(epoch + 1,
+#                                         total_loss / steps_per_epoch))
+#     print('Time taken for 1 epoch {} sec\n'.format(time.time() - start))
+
 
 def evaluate(sentence):
-    attention_plot = np.zeros((max_length_targ, max_length_inp))
-
-    sentence = preprocess_sentence(sentence)
-    temp = sentence.split(" ")
+    str_list = jieba.cut(sentence, use_paddle=True)
+    str = " ".join(list(str_list))
+    str = preprocess_sentence(str)
+    temp = str.split(" ")
     temp = filter(None, temp)
     inputs = [inp_lang.word_index[i] for i in temp]
     inputs = tf.keras.preprocessing.sequence.pad_sequences([inputs],
@@ -275,29 +271,25 @@ def evaluate(sentence):
     dec_input = tf.expand_dims([targ_lang.word_index['<start>']], 0)
 
     for t in range(max_length_targ):
-        predictions, dec_hidden, attention_weights = decoder(dec_input,
-                                                             dec_hidden,
-                                                             enc_out)
-
-        # 存储注意力权重以便后面制图
-        attention_weights = tf.reshape(attention_weights, (-1,))
-        attention_plot[t] = attention_weights.numpy()
+        predictions, dec_hidden = decoder(dec_input,
+                                          dec_hidden,
+                                          enc_out)
 
         predicted_id = tf.argmax(predictions[0]).numpy()
 
         result += targ_lang.index_word[predicted_id] + ' '
 
         if targ_lang.index_word[predicted_id] == '<end>':
-            return result, sentence, attention_plot
+            return result, str
 
         # 预测的 ID 被输送回模型
         dec_input = tf.expand_dims([predicted_id], 0)
 
-    return result, sentence, attention_plot
+    return result, str
 
 
 def translate(sentence):
-    result, sentence, attention_plot = evaluate(sentence)
+    result, sentence = evaluate(sentence)
 
     print('Input: %s' % (sentence))
     print('Predicted translation: {}'.format(result))
@@ -305,4 +297,4 @@ def translate(sentence):
 
 checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
 
-translate("我 去 打 球")
+translate("法國是一個福利國家，但它卻不再能夠負擔得起了。")
